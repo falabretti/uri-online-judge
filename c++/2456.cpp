@@ -1,20 +1,25 @@
 #include <iostream>
-#include <iomanip>
+#include <algorithm>
 
 using namespace std;
 
 int main() {
 
-    cout << setw(8) << "A" << endl;
-    cout << setw(9) << "B B" << endl;
-    cout << setw(10) << "C   C" << endl;
-    cout << setw(11) << "D     D" << endl;
-    cout << setw(12) << "E       E" << endl;
-    cout << setw(11) << "D     D" << endl;
-    cout << setw(10) << "C   C" << endl;
-    cout << setw(9) << "B B" << endl;
-    cout << setw(8) << "A" << endl;
+    int arr[5];
 
+    for(int i = 0; i < 5; i++) {
+        cin >> arr[i];
+    }
+
+    if(is_sorted(arr, arr + 5)) {
+        cout << "C" << endl;
+        return 0;
+    }
+
+    reverse(arr, arr + 5);
+
+    if(is_sorted(arr, arr + 5)) cout << "D" << endl;
+    else  cout << "N" << endl;
 
     return 0;
 }
