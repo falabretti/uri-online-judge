@@ -1,18 +1,15 @@
 #include <bits/stdc++.h> 
 
-#define X first
-#define Y second
-
 using namespace std;
 
 pair<int, int> get_nova_direcao(pair<int, int> parada, pair<int, int> pos) {
 
 	pair<int, int> direcao = {0, 0};
 
-	if(parada.X > pos.X) direcao = {1, 0};	
-	if(parada.X < pos.X) direcao = {-1, 0};	
-	if(parada.Y > pos.Y) direcao = {0, 1};	
-	if(parada.Y < pos.Y) direcao = {0, -1};
+	if(parada.first > pos.first) direcao = {1, 0};	
+	if(parada.first < pos.first) direcao = {-1, 0};	
+	if(parada.second > pos.second) direcao = {0, 1};	
+	if(parada.second < pos.second) direcao = {0, -1};
 
 	return direcao;	
 }
@@ -27,34 +24,40 @@ bool rota_segura(pair<int, int> pos_masetto,
 	int prox_parada_masetto = 0;
 	int prox_parada_giovanni = 0;
 
-	for(int i = 0; i < qnt_mov_giovanni; i++) {
+	int last_index = paradas_giovanni.size() - 1;
+	pair<int, int> destino_giovanni = paradas_giovanni.at(last_index);
 
-		cout << pos_masetto.X << " " << pos_masetto.Y << endl;
-		cout << pos_giovanni.X << " " << pos_giovanni.Y << endl;
-		cout << endl;
+	for(int i = 0; i < qnt_mov_giovanni; i++) {
 
 		pair<int, int> direcao_masetto = get_nova_direcao(
 			paradas_masetto.at(prox_parada_masetto),
 			pos_masetto);
 
-		pos_masetto.X += direcao_masetto.X;
-		pos_masetto.Y += direcao_masetto.Y;
+		pos_masetto.first += direcao_masetto.first;
+		pos_masetto.second += direcao_masetto.second;
 
 		if(pos_masetto == paradas_masetto.at(prox_parada_masetto)) {
-			prox_parada_masetto++;
+			if(!(prox_parada_masetto == paradas_masetto. size() - 1)) {
+				prox_parada_masetto++;
+			}
 		}
 
 		pair<int, int> direcao_giovanni = get_nova_direcao(
 			paradas_giovanni.at(prox_parada_giovanni),
 			pos_giovanni);
 
-		pos_giovanni.X += direcao_giovanni.X;
-		pos_giovanni.Y += direcao_giovanni.Y;
+		pos_giovanni.first += direcao_giovanni.first;
+		pos_giovanni.second += direcao_giovanni.second;
 
 		if(pos_giovanni == paradas_giovanni.at(prox_parada_giovanni)) {
-			prox_parada_giovanni++;
+			if(!(prox_parada_giovanni == paradas_giovanni. size() - 1)) {
+				prox_parada_giovanni++;
+			}
 		}
 
+
+		if(pos_masetto == pos_giovanni) return false;
+		if(pos_giovanni == destino_giovanni) return true;
 	}
 
 	return true;
@@ -62,16 +65,23 @@ bool rota_segura(pair<int, int> pos_masetto,
 
 int main() {
 
-	freopen("entrada.in", "r", stdin);
+	//freopen("entrada.in", "r", stdin);
 	int n;
 	cin >> n;
 
+	bool primeiro_caso = true;
+
 	while(n--) {
+
+		if(!primeiro_caso)
+			cout << endl;
+		else primeiro_caso = false;
+
 		pair<int, int> pos_masetto;
 		pair<int, int> pos_giovanni;
 
-		cin >> pos_masetto.X >> pos_masetto.Y;
-		cin >> pos_giovanni.X >> pos_giovanni.Y;
+		cin >> pos_masetto.first >> pos_masetto.second;
+		cin >> pos_giovanni.first >> pos_giovanni.second;
 
 		pair<int, int> pos_inicio_masetto = pos_masetto;
 		pair<int, int> pos_inicio_giovanni = pos_giovanni;
@@ -83,13 +93,13 @@ int main() {
 		paradas_giovanni.reserve(qnt_paradas_giovanni);
 		int qnt_mov_giovanni = 0;
 
-		// paradas giovanni
+		// leitura paradas giovanni
 		while(qnt_paradas_giovanni--) {
 			int x, y;
 			cin >> x >> y;
 
-			int dif_x = abs(pos_giovanni.X - x);
-			int dif_y = abs(pos_giovanni.Y - y);
+			int dif_x = abs(pos_giovanni.first - x);
+			int dif_y = abs(pos_giovanni.second - y);
 
 			qnt_mov_giovanni += dif_x + dif_y;
 			pos_giovanni = {x, y};
@@ -104,13 +114,13 @@ int main() {
 		paradas_masetto.reserve(qnt_paradas_masetto);
 		int qnt_mov_masetto = 0;
 
-		// paradas masetto
+		// leitura paradas masetto
 		while(qnt_paradas_masetto--) {
 			int x, y;
 			cin >> x >> y;
 
-			int dif_x = abs(pos_masetto.X - x);
-			int dif_y = abs(pos_masetto.Y - y);
+			int dif_x = abs(pos_masetto.first - x);
+			int dif_y = abs(pos_masetto.second - y);
 
 			qnt_mov_masetto += dif_x + dif_y;
 			pos_masetto = {x, y};
@@ -118,9 +128,11 @@ int main() {
 			paradas_masetto.push_back({x, y});
 		}
 
-		rota_segura(pos_inicio_masetto, pos_inicio_giovanni,
+		bool is_seguro = rota_segura(pos_inicio_masetto, pos_inicio_giovanni,
 			paradas_masetto, paradas_giovanni,
 			qnt_mov_masetto, qnt_mov_giovanni);
+
+		cout << (is_seguro ? "Yes" : "No") << endl;
 	}
 
 	return 0;
