@@ -2,4 +2,4 @@
 *.o
 *.in
 *.out
-
+.vscode
