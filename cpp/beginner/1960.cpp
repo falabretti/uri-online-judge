@@ -1,48 +1,43 @@
-#include <iostream>
-
+#include <bits/stdc++.h>
 using namespace std;
 
+map<int, string> roman_values() {
+    map<int, string> m;
+    m.insert(make_pair(1, "I"));
+    m.insert(make_pair(4, "IV"));
+    m.insert(make_pair(5, "V"));
+    m.insert(make_pair(9, "IX"));
+    m.insert(make_pair(10, "X"));
+    m.insert(make_pair(40, "XL"));
+    m.insert(make_pair(50, "L"));
+    m.insert(make_pair(90, "XC"));
+    m.insert(make_pair(100, "C"));
+    m.insert(make_pair(400, "CD"));
+    m.insert(make_pair(500, "D"));
+    m.insert(make_pair(900, "CM"));
+
+    return m;
+}
+
 int main() {
+    map<int, string> m = roman_values();
 
     int n;
-    int i, v, x, l, c, d;
-    bool teste;
-
     cin >> n;
 
-    d = n / 500;
-    n = n % 500;
-    c = n / 100;
-    n = n % 100;
-    l = n / 50;
-    n = n % 50;
-    x = n / 10;
-    n = n % 10;
-    v = n / 5;
-    n = n % 5;
-    i = n;
+    string output = "";
 
-    if(c == 4) {
-        cout << "CM";
-        teste = true;
-    } else {
-        while(d--) {
-            cout << 'D';
-        }
-    }
-
-    if(teste) {
-        if(x == 4) {
-            cout << "XC";
-            teste = true;
-        } else {
-            while(c--) {
-                cout << 'C';
+    do {
+        for (auto itr = m.rbegin(); itr != m.rend(); itr++) {
+            if (itr->first <= n) {
+                output += itr->second;
+                n -= itr->first;
+                break;
             }
         }
-    }
+    } while (n > 0);
 
-
+    cout << output << endl;
 
     return 0;
 }

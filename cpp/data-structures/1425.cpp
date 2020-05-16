@@ -3,21 +3,20 @@ using namespace std;
 
 bool bfs(int target, int max) {
     if (target == 1) return true;
-    int jump = 1;
 
-    queue<int> q;
-    q.push(1);
+    queue<pair<int, int>> q;
+    q.push(make_pair(1, 2));
 
     while (!q.empty()) {
-        jump++;
-
-        int cur = q.front();
+        pair<int, int> cur = q.front();
+        int pos = cur.first;
+        int jump = cur.second;
         q.pop();
 
-        int next_pos[] = {cur + (2 * jump - 1), cur - (2 * jump - 1)};
+        int next_pos[] = {pos + (2 * jump - 1), pos - (2 * jump - 1)};
         for (int next : next_pos) {
             if (next == target) return true;
-            if (next > 0 and next <= max) q.push(next);
+            if (next > 0 and next <= max) q.push(make_pair(next, jump + 1));
         }
     }
 
@@ -25,9 +24,6 @@ bool bfs(int target, int max) {
 }
 
 int main() {
-    freopen("in.txt", "r", stdin);
-    freopen("out.txt", "w", stdout);
-
     int n, m;
     while (cin >> n >> m and n and m) {
         bool res = bfs(m, n);
