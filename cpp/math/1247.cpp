@@ -1,34 +1,24 @@
-#include <iostream>
-#include <cstdio>
+#include <bits/stdc++.h>
 
 using namespace std;
 
 int main() {
 
-    freopen("1247.in", "r", stdin);
-    int d, v_fugitivo, v_guarda;
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
-    while(cin >> d >> v_fugitivo >> v_guarda) {
+    int d;
+    int vf;
+    int vg;
 
-            int d_fugitivo = d, d_guarda = 0;
+    while (cin >> d >> vf >> vg) {
 
-        while(d_fugitivo < 12) {
-                d_fugitivo += v_fugitivo;
-                d_guarda += v_guarda;
-        }
-        //cout << d_fugitivo << endl;
-        //cout << d_guarda << endl;
+        double f_time = 13. / vf;
 
-        if(v_guarda == 12 and v_guarda > v_fugitivo) {
-            cout << 'S' << endl;
-        }
-        else {
-            if(d_fugitivo >= d_guarda) {
-                cout << 'N' << endl;
-            } else {
-                cout << 'S' << endl;
-            }
-        }
+        double dg = sqrt(d * d + 13 * 13);
+        double g_time = dg / vg;
+
+        printf(g_time < f_time ? "S\n" : "N\n");
     }
 
     return 0;

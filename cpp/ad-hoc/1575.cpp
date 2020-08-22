@@ -1,139 +1,98 @@
-#include <bits/stdc++.h> 
+#include <bits/stdc++.h>
 
 using namespace std;
 
-pair<int, int> get_nova_direcao(pair<int, int> parada, pair<int, int> pos) {
+typedef struct Point {
+    int x;
+    int y;
+} Point;
 
-	pair<int, int> direcao = {0, 0};
+void read_points(Point points[], int n) {
 
-	if(parada.first > pos.first) direcao = {1, 0};	
-	if(parada.first < pos.first) direcao = {-1, 0};	
-	if(parada.second > pos.second) direcao = {0, 1};	
-	if(parada.second < pos.second) direcao = {0, -1};
-
-	return direcao;	
+    for (int i = 0; i < n; i++)
+        cin >> points[i].x >> points[i].y;
 }
 
-bool rota_segura(pair<int, int> pos_masetto,
-	pair<int, int> pos_giovanni,
-	vector<pair<int, int>>& paradas_masetto,
-	vector<pair<int, int>>& paradas_giovanni,
-	int qnt_mov_masetto,
-	int qnt_mov_giovanni) {
+void move(Point& pos, Point& dest) {
 
-	int prox_parada_masetto = 0;
-	int prox_parada_giovanni = 0;
+    int diff_x = dest.x - pos.x;
+    int diff_y = dest.y - pos.y;
 
-	int last_index = paradas_giovanni.size() - 1;
-	pair<int, int> destino_giovanni = paradas_giovanni.at(last_index);
+    pos.x += (diff_x > 0) - (diff_x < 0);
+    pos.y += (diff_y > 0) - (diff_y < 0);
+}
 
-	for(int i = 0; i < qnt_mov_giovanni; i++) {
-
-		pair<int, int> direcao_masetto = get_nova_direcao(
-			paradas_masetto.at(prox_parada_masetto),
-			pos_masetto);
-
-		pos_masetto.first += direcao_masetto.first;
-		pos_masetto.second += direcao_masetto.second;
-
-		if(pos_masetto == paradas_masetto.at(prox_parada_masetto)) {
-			if(!(prox_parada_masetto == paradas_masetto. size() - 1)) {
-				prox_parada_masetto++;
-			}
-		}
-
-		pair<int, int> direcao_giovanni = get_nova_direcao(
-			paradas_giovanni.at(prox_parada_giovanni),
-			pos_giovanni);
-
-		pos_giovanni.first += direcao_giovanni.first;
-		pos_giovanni.second += direcao_giovanni.second;
-
-		if(pos_giovanni == paradas_giovanni.at(prox_parada_giovanni)) {
-			if(!(prox_parada_giovanni == paradas_giovanni. size() - 1)) {
-				prox_parada_giovanni++;
-			}
-		}
-
-
-		if(pos_masetto == pos_giovanni) return false;
-		if(pos_giovanni == destino_giovanni) return true;
-	}
-
-	return true;
+bool is_equal(Point& a, Point& b) {
+    return a.x == b.x and a.y == b.y;
 }
 
 int main() {
 
-	//freopen("entrada.in", "r", stdin);
-	int n;
-	cin >> n;
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
-	bool primeiro_caso = true;
+    int n;
+    cin >> n;
 
-	while(n--) {
+    while (n--) {
 
-		if(!primeiro_caso)
-			cout << endl;
-		else primeiro_caso = false;
+        Point giovanni;
+        Point leporello;
+    
+        cin >> giovanni.x >> giovanni.y;
+        cin >> leporello.x >> leporello.y;
 
-		pair<int, int> pos_masetto;
-		pair<int, int> pos_giovanni;
+        int l_size;
+        cin >> l_size;
 
-		cin >> pos_masetto.first >> pos_masetto.second;
-		cin >> pos_giovanni.first >> pos_giovanni.second;
+        Point leporello_route[l_size];
+        read_points(leporello_route, l_size);
 
-		pair<int, int> pos_inicio_masetto = pos_masetto;
-		pair<int, int> pos_inicio_giovanni = pos_giovanni;
+        int g_size;
+        cin >> g_size;
 
-		int qnt_paradas_giovanni;
-		cin >> qnt_paradas_giovanni;
+        Point giovanni_route[g_size];
+        read_points(giovanni_route, g_size);
 
-		vector<pair<int, int>> paradas_giovanni;
-		paradas_giovanni.reserve(qnt_paradas_giovanni);
-		int qnt_mov_giovanni = 0;
+        int next_g = 0;
+        int next_l = 0;
 
-		// leitura paradas giovanni
-		while(qnt_paradas_giovanni--) {
-			int x, y;
-			cin >> x >> y;
+        bool secure = false;
 
-			int dif_x = abs(pos_giovanni.first - x);
-			int dif_y = abs(pos_giovanni.second - y);
+        while (true) {
 
-			qnt_mov_giovanni += dif_x + dif_y;
-			pos_giovanni = {x, y};
+            move(giovanni, giovanni_route[next_g]);
+            move(leporello, leporello_route[next_l]);
 
-			paradas_giovanni.push_back({x, y});
-		}
+            if (is_equal(giovanni, giovanni_route[next_g])) {
+                next_g++;
+            }
 
-		int qnt_paradas_masetto;
-		cin >> qnt_paradas_masetto;
+            if (is_equal(leporello, leporello_route[next_l])) {
+                next_l++;
+            }
 
-		vector<pair<int, int>> paradas_masetto;
-		paradas_masetto.reserve(qnt_paradas_masetto);
-		int qnt_mov_masetto = 0;
+            if (next_l == l_size) {
+                secure = true;
+                break;
+            }
 
-		// leitura paradas masetto
-		while(qnt_paradas_masetto--) {
-			int x, y;
-			cin >> x >> y;
+            if (is_equal(giovanni, leporello)) {
+                secure = false;
+                break;
+            }
 
-			int dif_x = abs(pos_masetto.first - x);
-			int dif_y = abs(pos_masetto.second - y);
+            if (next_g == g_size) {
+                secure = true;
+                break;
+            }
+        }
 
-			qnt_mov_masetto += dif_x + dif_y;
-			pos_masetto = {x, y};
+        printf(secure ? "Yes\n" : "No\n");
 
-			paradas_masetto.push_back({x, y});
-		}
+        if (n != 0)
+            printf("\n");
+    }
 
-		bool is_seguro = rota_segura(pos_inicio_masetto, pos_inicio_giovanni,
-			paradas_masetto, paradas_giovanni,
-			qnt_mov_masetto, qnt_mov_giovanni);
-
-		cout << (is_seguro ? "Yes" : "No") << endl;
-	}
-
-	return 0;
+    return 0;
 }

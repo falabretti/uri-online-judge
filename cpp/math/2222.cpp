@@ -1,110 +1,63 @@
-#include <iostream>
-#include <cstdio>
-#include <vector>
-#include <algorithm>
-#include <set>
+#include <bits/stdc++.h>
 
 using namespace std;
 
-int binarySearch(vector<int>& vec, int min, int max, int target) {
-    if(max >= min) {
-        int mid = min + (max - min) / 2;
+#define MAX 61
 
-        if(target == vec[mid]) return mid;
+int count(int matrix[][MAX], int a, int b, int op) {
 
-        if(target < vec[mid]) {
-            return binarySearch(vec, min, mid - 1, target);
+    int count = 0;
+
+    for (int j = 0; j < MAX; j++) {
+        if (op == 1) {
+            count += matrix[a][j] and matrix[b][j];
+        } else {
+            count +=  matrix[a][j] or matrix[b][j];
         }
-
-        return binarySearch(vec, mid + 1, max, target);
     }
 
-    return -1;
+    return count;
 }
 
 int main() {
 
-    //freopen("entrada.in", "r", stdin);
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
     int n;
-    scanf("%d\n", &n);
+    cin >> n;
 
-    while(n--) {
-        int qnt_conjuntos;
-        scanf("%d\n", &qnt_conjuntos);
+    while (n--) {
+        int len;
+        cin >> len;
 
-        vector<int> conjuntos[qnt_conjuntos];
+        int matrix[len][MAX];
+        memset(matrix, 0, sizeof(matrix));
 
-        for(int i = 0; i < qnt_conjuntos; i++) {
-            int tam;
-            scanf("%d\n", &tam);
+        for (int i = 0; i < len; i++) {
+            int size;
+            cin >> size;
 
-            vector<int> vec;
-            vec.reserve(tam);
-
-            for(int j = 0; j < tam; j++) {
+            for (int j = 0; j < size; j++) {
                 int v;
-                scanf("%d", &v);
-                vec.push_back(v);
-            }
+                cin >> v;
 
-            conjuntos[i] = vec;
+                matrix[i][v] = 1;
+            }
         }
 
-        int qnt_op;
-        scanf("%d\n", &qnt_op);
+        int q;
+        cin >> q;
 
-        for(int i = 0; i < qnt_op; i++) {
-            int op, c1, c2;
-            scanf("%d %d %d\n", &op, &c1, &c2);
-            c1--;
-            c2--;
+        while (q--) {
+            int op;
+            int a;
+            int b;
 
-            vector<int>* ptr1 = &conjuntos[c1];
-            vector<int>* ptr2 = &conjuntos[c2];
+            cin >> op >> a >> b;
 
-            if((*ptr2).size() < (*ptr1).size()) {
-                vector<int>* temp = ptr1;
-                ptr1 = ptr2;
-                ptr2 = temp;
-            }
-
-            vector<int>& v1 = *ptr1;
-            vector<int>& v2 = *ptr2;
-
-            sort(v1.begin(), v1.end());
-
-            if(op == 1) {
-                vector<int> I;
-                I.reserve(v1.size() + v2.size());
-
-                for(int j = 0; j < v2.size(); j++) {
-                    if(binarySearch(v1, 0, v1.size() - 1, v2[j]) != -1) {
-                            I.push_back(v2[j]);
-                    }
-                }
-
-                set<int> s(I.begin(), I.end());
-                printf("%d\n", s.size());
-            }
-            else {
-                vector<int> U;
-                U.reserve(v1.size() + v2.size());
-
-                for(int j = 0; j < v1.size(); j++) {
-                        U.push_back(v1[j]);
-                }
-
-                for(int j = 0; j < v2.size(); j++) {
-                    if(binarySearch(v1, 0, v1.size() - 1, v2[j]) == -1) {
-                            U.push_back(v2[j]);
-                    }
-                }
-
-                set<int> s(U.begin(), U.end());
-                printf("%d\n", s.size());
-
-                U.
-            }
+            int res = count(matrix, a - 1, b - 1, op);
+            cout << res << endl;
         }
     }
 

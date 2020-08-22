@@ -1,16 +1,23 @@
-#include <cstdio>
-#include <iostream>
+#include <bits/stdc++.h>
 
 using namespace std;
 
+map<string, string> dict = {
+    { "esquerda", "ingles"},
+    { "direita", "frances"},
+    { "nenhuma", "portugues"},
+    { "as duas", "caiu"}
+};
+
 int main() {
 
-    char entrada[20];
-    string lixo;
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    string s;
 
-    while(scanf("%s", &entrada)) {
-
-            cout << entrada << endl;
+    while (getline(cin, s)) {
+        cout << dict[s] << endl;
     }
 
     return 0;
